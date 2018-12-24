@@ -1,0 +1,18 @@
+{
+  "name": "apollo",
+  "version": "1.0.0",
+  "description": "a simple framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@code.influx.io:kenneth/apollo.git"
+  },
+  "keywords": [
+    "framework"
+  ],
+  "author": "Kenneth <kenneth@influx.io>",
+  "license": "MIT"
+}
