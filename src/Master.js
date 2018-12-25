@@ -70,7 +70,7 @@ module.exports = class Master extends Process {
                     setup.exec = this.appPath + Path.sep + worker.name
                 }
                 if (worker['args']) {
-                    
+                    setup.args = worker['args']
                 }
             }
 
