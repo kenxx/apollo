@@ -6,7 +6,7 @@ const ApolloProcess = require('./apollo_process')
 
 const SafetyCall = (obj, func, ...args) => {
     if (typeof obj[func] == 'function') {
-        return obj[func](...args)
+        return obj[func].apply(obj, args)
     }
     return null
 }
