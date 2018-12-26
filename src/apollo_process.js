@@ -5,7 +5,7 @@ const process = require('process')
 const console = require('console')
 
 module.exports = class ApolloProcess extends events.EventEmitter {
-    constructor (config) {
+    constructor () {
         super()
         this.develop = false
         this.process = process
@@ -24,15 +24,19 @@ module.exports = class ApolloProcess extends events.EventEmitter {
         }
     }
 
-    bindEvents(object, from) {
-        if (this[from]) {
-            for (let event in this[from]) {
-                this.writeInfo(`binding event(${event}) from ${from}.`)
+    bindEvents(object, fromProperty) {
+        if (this[fromProperty]) {
+            for (let event in this[fromProperty]) {
+                this.writeInfo(`binding event(${event}) from ${fromProperty}.`)
                 object.on(event, (...args) => {
-                    this.writeInfo(`event(${event}) from ${from} emit`)
-                    this[from][event].apply(this, args)
+                    this.writeInfo(`event(${event}) from ${fromProperty} emit`)
+                    this[fromProperty][event].apply(this, args)
                 })
             }
         }
+    }
+
+    static async SleepMS(ms) {
+        return new Promise((resovle) => setTimeout(() => resovle(), ms))
     }
 }

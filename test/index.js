@@ -4,6 +4,7 @@ const path = require('path')
 const {
     Apollo
 } = require('../index')
+const console = require('console')
 
 new Apollo({
     name: 'TestObject',
@@ -36,7 +37,7 @@ new Apollo({
         fork() {},
         listening() {},
         message() {},
-        online(worker) {},
+        online() {},
         setup() {}
     },
     workerEvents: {

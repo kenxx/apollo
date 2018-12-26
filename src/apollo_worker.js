@@ -11,7 +11,7 @@ const SafetyCall = (obj, func, ...args) => {
 
 module.exports = class ApolloWorker extends ApolloProcess {
     constructor(config) {
-        super(config)
+        super()
         this.name = 'Worker'
 
         SafetyCall(this, 'beforeInitial')
@@ -36,7 +36,7 @@ module.exports = class ApolloWorker extends ApolloProcess {
         }
     }
 
-    async sendToParent(...args) {
+    async send(...args) {
         this.process.send(...args)
     }
 }

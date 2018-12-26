@@ -4,14 +4,11 @@ const cluster = require('cluster')
 const path = require('path')
 const ApolloProcess = require('./apollo_process')
 
-const SafetyCall = (obj, func, ...args) => {
-    if (typeof obj[func] == 'function') {
-        return obj[func].apply(obj, args)
+const SafetyCall = (obj, funcName, ...args) => {
+    if (typeof obj[funcName] == 'function') {
+        return obj[funcName].apply(obj, args)
     }
     return null
-}
-const isObject = (obj) => {
-    return obj !== null && typeof obj === 'object'
 }
 
 const _toString = Object.prototype.toString
@@ -19,11 +16,9 @@ const isPlainObject = (obj) => {
     return _toString.call(obj) === '[object Object]'
 }
 
-const sleep = async (ms) => new Promise((resolve) => setTimeout((res) => resolve(res), ms))
-
 module.exports = class Apollo extends ApolloProcess {
     constructor(config) {
-        super(config)
+        super()
         this.name = 'Apollo'
         this.appPath = this.process.cwd()
         this.cluster = cluster
@@ -74,7 +69,7 @@ module.exports = class Apollo extends ApolloProcess {
             },
             async exit(worker, code, signal) {
                 this.writeInfo(`worker ${worker.process.pid} died (${signal || code}). restarting in ${this.reforkWaitting} ms...`)
-                await sleep(this.reforkWaitting)
+                await Apollo.SleepMS(this.reforkWaitting)
                 this.__fork(this._forks[worker.id].settings)
             }
         }
