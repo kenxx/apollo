@@ -1,6 +1,22 @@
 'use strict'
 
-const {Master} = require('../index')
-const AppConfig = require('./config/app')
+const path = require('path')
+const {
+    Apollo
+} = require('../index')
 
-Master.Start(AppConfig)
+new Apollo({
+    name: 'TestObject',
+    reforkWaitting: 5000,
+    appPath: path.join(__dirname, 'workers'),
+    workers: {
+        test: {
+            args: ['test', 'good'],
+            cwd: './',
+            fork: 1
+        }
+    },
+    afterInitial() {
+        this.writeLine('test')
+    },
+})
