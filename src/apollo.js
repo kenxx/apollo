@@ -27,6 +27,7 @@ module.exports = class Apollo extends ApolloProcess {
         this.name = 'Apollo'
         this.appPath = this.process.cwd()
         this.cluster = cluster
+        this.reforkWaitting = 500
         this._forks = {}
 
         SafetyCall(this, 'beforeInitial')
@@ -35,10 +36,10 @@ module.exports = class Apollo extends ApolloProcess {
     }
 
     __initial() {
-        this.__bindEvents(this.process, '__defaultProcessEvents')
-        this.__bindEvents(this.process, 'processEvents')
-        this.__bindEvents(this.cluster, '__defaultMasterEvents')
-        this.__bindEvents(this.cluster, 'masterEvents')
+        this.bindEvents(this.process, '__defaultProcessEvents')
+        this.bindEvents(this.process, 'processEvents')
+        this.bindEvents(this.cluster, '__defaultMasterEvents')
+        this.bindEvents(this.cluster, 'masterEvents')
         SafetyCall(this, 'afterInitial')
         this.__start()
     }
@@ -47,7 +48,7 @@ module.exports = class Apollo extends ApolloProcess {
         if (isPlainObject(this['workers'])) {
             for (let name in this.workers) {
                 let worker = this.workers[name]
-                let settings = this.__makeForkSetup(
+                let settings = this.__makeSettings(
                     name,
                     worker['args'] || [],
                     worker['cwd'] || undefined,
@@ -60,7 +61,7 @@ module.exports = class Apollo extends ApolloProcess {
         }
     }
 
-    __bindDefaultProcessEvents() {
+    get __defaultProcessEvents() {
         return {
 
         }
@@ -72,8 +73,8 @@ module.exports = class Apollo extends ApolloProcess {
                 this.writeInfo(`The worker #${worker.id} has disconnected`)
             },
             async exit(worker, code, signal) {
-                console.log('worker %d died (%s). restarting...', worker.process.pid, signal || code)
-                await sleep(this.reforkWaitting || 200)
+                this.writeInfo(`worker ${worker.process.pid} died (${signal || code}). restarting in ${this.reforkWaitting} ms...`)
+                await sleep(this.reforkWaitting)
                 this.__fork(this._forks[worker.id].settings)
             }
         }
@@ -97,13 +98,13 @@ module.exports = class Apollo extends ApolloProcess {
                 worker: workerObject,
                 settings: settings
             }
-            this.__bindEvents(workerObject, '__defaultEvents')
-            this.__bindEvents(workerObject, 'workerEvents')
+            this.bindEvents(workerObject, '__defaultEvents')
+            this.bindEvents(workerObject, 'workerEvents')
             this.writeInfo(`Forked ${settings.name} at pid ${workerPid} count ${i} id ${workerObject.id}`)
         }
     }
 
-    __makeForkSetup(name, args, cwd, fork) {
+    __makeSettings(name, args, cwd, fork) {
         return {
             name: name,
             setup: {

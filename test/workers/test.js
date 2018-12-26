@@ -7,7 +7,8 @@ console.log('forked, ', process.ppid, process.pid)
 
 new ApolloWorker({
     name: 'Worker',
-    run () {
+    async run () {
         this.writeLine('test')
+        this.process.exit(1)
     }
 })

@@ -24,7 +24,7 @@ module.exports = class ApolloProcess extends events.EventEmitter {
         }
     }
 
-    __bindEvents(object, from) {
+    bindEvents(object, from) {
         if (this[from]) {
             for (let event in this[from]) {
                 this.writeInfo(`binding event(${event}) from ${from}.`)

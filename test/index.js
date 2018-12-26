@@ -7,7 +7,8 @@ const {
 
 new Apollo({
     name: 'TestObject',
-    reforkWaitting: 5000,
+    develop: true,
+    reforkWaitting: 2000,
     appPath: path.join(__dirname, 'workers'),
     workers: {
         test: {
@@ -19,4 +20,31 @@ new Apollo({
     afterInitial() {
         this.writeLine('test')
     },
+    processEvents: {
+        beforeExit() {},
+        disconnect() {},
+        exit() {},
+        message() {},
+        rejectionHandled(err) {console.trace(err)},
+        uncaughtException(err) {console.trace(err)},
+        unhandledRejection(err) {console.trace(err)},
+        warning() {}
+    },
+    masterEvents: {
+        disconnect() {},
+        exit() {},
+        fork() {},
+        listening() {},
+        message() {},
+        online(worker) {},
+        setup() {}
+    },
+    workerEvents: {
+        disconnect() {},
+        error() {},
+        exit() {},
+        listening() {},
+        message() {},
+        online() {},
+    }
 })
