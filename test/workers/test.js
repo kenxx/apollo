@@ -9,7 +9,13 @@ new ApolloWorker({
         this.writeLine('test')
         await ApolloWorker.SleepMS(2000)
         this.send('test')
-        await ApolloWorker.SleepMS(5000)
-        this.process.exit(1)
+        while (true) {
+            await ApolloWorker.SleepMS(5000)
+            let i = parseInt(Math.random() * 100)
+            if (i > 50) {
+                this.writeLine(`unfortunately is ${i}`)
+                this.process.exit(1)
+            }
+        }
     }
 })

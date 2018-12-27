@@ -4,7 +4,6 @@ const path = require('path')
 const {
     Apollo
 } = require('../index')
-const console = require('console')
 
 new Apollo({
     name: 'TestObject',
@@ -15,7 +14,7 @@ new Apollo({
         test: {
             args: ['test', 'good'],
             cwd: './',
-            fork: 1
+            fork: 2
         }
     },
     afterInitial() {
@@ -26,9 +25,9 @@ new Apollo({
         disconnect() {},
         exit() {},
         message() {},
-        rejectionHandled(err) {console.trace(err)},
-        uncaughtException(err) {console.trace(err)},
-        unhandledRejection(err) {console.trace(err)},
+        rejectionHandled(reason, p) {this.writeLine(reason, p)},
+        uncaughtException() {},
+        unhandledRejection(reason, p) {this.writeLine(reason, p)},
         warning() {}
     },
     masterEvents: {

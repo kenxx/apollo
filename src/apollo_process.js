@@ -4,8 +4,10 @@ const events = require('events')
 const process = require('process')
 const console = require('console')
 
+const _toString = Object.prototype.toString
+
 module.exports = class ApolloProcess extends events.EventEmitter {
-    constructor () {
+    constructor() {
         super()
         this.develop = false
         this.process = process
@@ -26,11 +28,17 @@ module.exports = class ApolloProcess extends events.EventEmitter {
 
     bindEvents(object, fromProperty) {
         if (this[fromProperty]) {
-            for (let event in this[fromProperty]) {
-                this.writeInfo(`binding event(${event}) from ${fromProperty}.`)
+            this.bindEventsFromObject(object, this[fromProperty], fromProperty)
+        }
+    }
+
+    bindEventsFromObject(object, fromObject, name = 'object') {
+        if (ApolloProcess.IsPlainObject(fromObject)) {
+            for (let event in fromObject) {
+                this.writeInfo(`binding event(${event}) from ${name}.`)
                 object.on(event, (...args) => {
-                    this.writeInfo(`event(${event}) from ${fromProperty} emit`)
-                    this[fromProperty][event].apply(this, args)
+                    this.writeInfo(`event(${event}) from ${name} emit`)
+                    fromObject[event].apply(this, args)
                 })
             }
         }
@@ -38,5 +46,16 @@ module.exports = class ApolloProcess extends events.EventEmitter {
 
     static async SleepMS(ms) {
         return new Promise((resovle) => setTimeout(() => resovle(), ms))
+    }
+
+    static IsPlainObject(obj) {
+        return _toString.call(obj) === '[object Object]'
+    }
+
+    static SafetyCall(obj, funcName, ...args) {
+        if (typeof obj[funcName] == 'function') {
+            return obj[funcName].apply(obj, args)
+        }
+        return null
     }
 }
