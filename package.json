@@ -4,7 +4,8 @@
   "description": "a simple framework",
   "main": "index.js",
   "scripts": {
-    "test": "node test"
+    "test": "node test",
+    "debug": "node --inspect-brk=9229 test"
   },
   "repository": {
     "type": "git",

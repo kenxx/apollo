@@ -39,7 +39,7 @@ module.exports = class ApolloWorker extends ApolloProcess {
             SIGINT() {
                 this.writeInfo('receive SIGINT')
                 this.process.disconnect()
-                this.process.exit(0)
+                this.exit(0)
             }
         }
     }
