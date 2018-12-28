@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@code.influx.io:kenneth/apollo.git"
+    "url": "git@github.com:kenxx/apollo.git"
   },
   "keywords": [
     "framework"
   ],
-  "author": "Kenneth <kenneth@influx.io>",
+  "author": "Kenneth <me@kenx.cn>",
   "license": "MIT"
 }

@@ -7,14 +7,13 @@ const {
 
 new Apollo({
     name: 'TestObject',
-    develop: true,
     reforkWaitting: 2000,
     appPath: path.join(__dirname, 'workers'),
     workers: {
         test: {
             args: ['test', 'good'],
             cwd: './',
-            fork: 2
+            fork: 3
         }
     },
     afterInitial() {
@@ -26,13 +25,15 @@ new Apollo({
         exit() {},
         message() {},
         rejectionHandled(reason, p) {this.writeLine(reason, p)},
-        uncaughtException() {},
+        uncaughtException(err) {this.writeLine(err.message)},
         unhandledRejection(reason, p) {this.writeLine(reason, p)},
         warning() {}
     },
     masterEvents: {
         disconnect() {},
-        exit() {},
+        exit() {
+            this.process
+        },
         fork() {},
         listening() {},
         message() {},

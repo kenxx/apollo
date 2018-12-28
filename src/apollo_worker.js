@@ -6,6 +6,7 @@ module.exports = class ApolloWorker extends ApolloProcess {
     constructor(config) {
         super()
         this.name = 'Worker'
+        this.__exiting = false
         this.writeLine(`Apollo Worker run on PID=${this.process.pid} PPID=${this.process.ppid}`)
 
         ApolloWorker.SafetyCall(this, 'beforeInitial')
@@ -30,7 +31,9 @@ module.exports = class ApolloWorker extends ApolloProcess {
 
     get __defaultProcessEvents() {
         return {
-
+            beforeExit(exitCode) {
+                this.writeInfo(`worker pid=${this.process.pid} is exiting by code=${exitCode}`)
+            }
         }
     }
 
@@ -38,7 +41,6 @@ module.exports = class ApolloWorker extends ApolloProcess {
         return {
             SIGINT() {
                 this.writeInfo('receive SIGINT')
-                this.process.disconnect()
                 this.exit(0)
             }
         }

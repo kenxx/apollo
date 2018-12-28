@@ -71,12 +71,8 @@ module.exports = class Apollo extends ApolloProcess {
     get __defaultSignal() {
         return {
             SIGINT () {
-                this.writeInfo('Receive SIGINT, now killing children.')
+                this.writeLine('Receive SIGINT, shutting down the system, now killing children.')
                 this.__systemShutdown = true
-                for(let id in this.__workers) {
-                    this.__workers[id].worker.kill('SIGINT')
-                    delete this.__workers[id]
-                }
             }
         }
     }
@@ -84,14 +80,16 @@ module.exports = class Apollo extends ApolloProcess {
     get __defaultMasterEvents() {
         return {
             disconnect(worker) {
-                this.writeInfo(`The worker #${worker.id} has disconnected`)
+                this.writeLine(`worker #${worker.id} has disconnected`)
             },
             async exit(worker, code, signal) {
-                this.writeInfo(`worker #${worker.id} pid=${worker.process.pid} died (${signal || code}).`)
+                this.writeLine(`worker #${worker.id} pid=${worker.process.pid} died (${signal || code}).`)
                 await Apollo.SleepMS(this.reforkWaitting)
                 if (! this.__systemShutdown) {
-                    this.writeInfo(`restarting in ${this.reforkWaitting} ms...`)
+                    this.writeLine(`restarting in ${this.reforkWaitting} ms...`)
                     this.__restart(worker.id, this.__workers[worker.id].name)
+                } else {
+                    this.writeLine('System is shutting down by SIGINT')
                 }
             }
         }
@@ -110,12 +108,7 @@ module.exports = class Apollo extends ApolloProcess {
         }
     }
 
-    __startWorker(name) {
-        if (this.__systemShutdown) {
-            this.writeInfo('system is now shutting down.')
-            return
-        }
-        
+    __startWorker(name) {        
         for (let i = 0; i < this.__workersSettings[name].fork; i++) {
             this.__fork(name)
         }
