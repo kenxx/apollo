@@ -1,6 +1,6 @@
 {
   "name": "apollo-service",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a simple framework",
   "main": "index.js",
   "scripts": {
